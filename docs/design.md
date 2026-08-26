@@ -5,7 +5,7 @@
 
 ## Overview
 
-`agents-compat` is a CLI tool that generates agent-specific configurations from open standards and keeps them in sync. It uses AGENTS.md, Agent Skills (SKILL.md), and Agent Plugins (plugin.json + mcp.json) as the source of truth, then generates native config files for each supported AI coding agent.
+`agents-compat` is a CLI tool that generates agent-specific configurations from open standards and keeps them in sync. It uses AGENTS.md, [Agent Skills](https://agentskills.io) (`SKILL.md`), the [Model Context Protocol](https://modelcontextprotocol.io) (MCP client configuration), and [Agent Plugins](https://agent-plugins.org) (`plugin.json` + `mcp.json`) as the source of truth, then generates native config files for each supported AI coding agent. Agent Plugins is a packaging layer over the other two: a plugin bundles an Agent Skills directory (`skills/`) and an MCP client config (`mcp.json`) behind a single manifest.
 
 ## Problem
 
@@ -13,7 +13,7 @@ Each AI coding agent uses its own proprietary file formats, directory layouts, a
 
 ## Design Principles
 
-1. **Open standards as source of truth** — AGENTS.md, SKILL.md, plugin.json/mcp.json. No proprietary canonical format.
+1. **Open standards as source of truth** — AGENTS.md, Agent Skills (`SKILL.md`), MCP (`mcp.json`), Agent Plugins (`plugin.json`). No proprietary canonical format.
 2. **Symlinks over copies** — Generated files symlink to canonical sources so updates propagate without re-running.
 3. **Idempotent** — Running `generate` multiple times is safe; only writes when content differs.
 4. **Non-destructive** — Only creates/updates files it generated. Never touches user-authored files.
@@ -156,6 +156,8 @@ Codex, Cursor, OpenCode, Windsurf, Copilot all read AGENTS.md natively — no br
 
 ### Source: .agents/skills/ or Agent Plugins skills/
 
+`SKILL.md` is the [Agent Skills](https://agentskills.io) format: a portable, self-contained capability package. Agent Plugins reuses it verbatim for a plugin's `skills/` directory, so the same discovery and symlinking logic covers both standalone skills and skills bundled in a plugin.
+
 Skills discovered at:
 - `.agents/skills/*/SKILL.md` (standard)
 - `.opencode/skills/*/SKILL.md`
@@ -183,7 +185,7 @@ For Cursor: symlink `.cursor/skills/` → `.agents/skills/`.
 
 ### Source: Agent Plugins mcp.json
 
-The Agent Plugins spec defines a portable MCP config:
+[MCP](https://modelcontextprotocol.io) (Model Context Protocol) defines how agents connect to external tool servers, including a client configuration format for declaring which MCP servers to run. The Agent Plugins spec adopts this format almost verbatim for its portable `mcp.json`:
 
 ```json
 {

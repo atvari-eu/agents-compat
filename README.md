@@ -8,7 +8,7 @@ A CLI tool that generates agent-specific configurations from standardized format
 
 ## Motivation
 
-Standards like [AGENTS.md](https://agents.md), [Agent Skills](https://agentskills.io), and [Agent Plugins](https://agent-plugins.org) provide portable ways to describe agent instructions and tooling. However, each AI coding agent still expects its own proprietary file formats, directory layouts, and configuration schemas.
+Standards like [AGENTS.md](https://agents.md) (rules & instructions), [Agent Skills](https://agentskills.io) (reusable skill packages), and the [Model Context Protocol](https://modelcontextprotocol.io) (MCP; tool server configuration) provide portable ways to describe agent instructions and tooling. [Agent Plugins](https://agent-plugins.org) builds on the latter two — a plugin bundles an Agent Skills directory and an MCP client config (`mcp.json`) behind one manifest. However, each AI coding agent still expects its own proprietary file formats, directory layouts, and configuration schemas.
 
 The result: teams either maintain parallel config files for each agent, or adopt a tool-specific canonical format that locks them into one ecosystem.
 
@@ -44,7 +44,7 @@ Skills are symlinked, not copied, so updates propagate automatically.
 
 ### 3. MCP Server Config Normalization
 
-Generate MCP server configurations from [Agent Plugins](https://agent-plugins.org) `mcp.json` into each agent's native format:
+Generate MCP server configurations — [Agent Plugins](https://agent-plugins.org)' `mcp.json`, itself a [Model Context Protocol](https://modelcontextprotocol.io) client configuration file — into each agent's native format:
 
 | Agent | Config File | Root Key | Remote URL Field | Type Values |
 |---|---|---|---|---|
@@ -78,6 +78,7 @@ Generate agent-specific hook configurations from a unified definition:
 |---|---|
 | [AGENTS.md](https://agents.md) | Planned |
 | [Agent Skills](https://agentskills.io) | Planned |
+| [Model Context Protocol](https://modelcontextprotocol.io) | Planned |
 | [Agent Plugins](https://agent-plugins.org) (v1.0) | Planned |
 
 ## Supported Agents
@@ -109,7 +110,7 @@ This project is inspired by and aims to improve upon existing sync tools.
 
 | Feature | agents-compat | rulesync | AgentsMesh |
 |---|---|---|---|
-| **Canonical format** | Open standards (AGENTS.md, Agent Plugins) | `.rulesync/` (proprietary) | `.agentsmesh/` (proprietary) |
+| **Canonical format** | Open standards (AGENTS.md, Agent Skills, MCP, Agent Plugins) | `.rulesync/` (proprietary) | `.agentsmesh/` (proprietary) |
 | **Rules/instructions sync** | Planned | ✅ 30+ targets | ✅ 15+ targets |
 | **Skills symlinking** | Planned | ✅ | ✅ |
 | **MCP config normalization** | Planned | Partial | Partial |
@@ -123,7 +124,7 @@ This project is inspired by and aims to improve upon existing sync tools.
 
 ### Key Differentiator
 
-Existing tools require adopting a **proprietary canonical format** (`.rulesync/`, `.agentsmesh/`). `agents-compat` instead uses **open standards themselves** as the source of truth — `AGENTS.md` for instructions, `SKILL.md` for skills, `plugin.json` + `mcp.json` for tooling. This means:
+Existing tools require adopting a **proprietary canonical format** (`.rulesync/`, `.agentsmesh/`). `agents-compat` instead uses **open standards themselves** as the source of truth — `AGENTS.md` for instructions, [Agent Skills](https://agentskills.io)' `SKILL.md` for skills, [MCP](https://modelcontextprotocol.io)'s `mcp.json` for tool servers, and [Agent Plugins](https://agent-plugins.org)' `plugin.json` to bundle it all together. This means:
 
 - No new format to learn or migrate to
 - Configs are portable even without `agents-compat` installed
